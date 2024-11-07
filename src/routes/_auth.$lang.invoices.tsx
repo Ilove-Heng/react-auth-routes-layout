@@ -44,7 +44,7 @@ function InvoicesRoute() {
       };
 
 
-    const { data: users, isLoading, error, refetch, isRefetching } = useUsers();
+    const { data: users } = useUsers();
 
     const validateLanguage = (lang: string) => {
         const supportedLanguages = ['en', 'km']

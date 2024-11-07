@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_auth/$lang/invoices/$invoiceId')({
 
 function InvoicePage() {
   const { invoiceId } = useParams({from: '/_auth/$lang/invoices/$invoiceId'});
-  const { data: user, isLoading, error, refetch, isRefetching } = useUser(Number(invoiceId));
+  const { data: user } = useUser(Number(invoiceId));
 
   return (
     <section style={{
