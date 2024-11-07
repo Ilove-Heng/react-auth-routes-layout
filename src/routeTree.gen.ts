@@ -14,9 +14,10 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as LangIndexImport } from './routes/$lang.index'
 import { Route as LangLoginImport } from './routes/$lang.login'
-import { Route as AuthInvoicesInvoiceIdImport } from './routes/_auth.invoices.$invoiceId'
+import { Route as AuthLangInvoicesImport } from './routes/_auth.$lang.invoices'
 import { Route as AuthLangDashboardImport } from './routes/_auth.$lang.dashboard'
 import { Route as AuthLangInvoicesIndexImport } from './routes/_auth.$lang.invoices.index'
+import { Route as AuthLangInvoicesInvoiceIdImport } from './routes/_auth.$lang.invoices.$invoiceId'
 
 // Create/Update Routes
 
@@ -37,9 +38,9 @@ const LangLoginRoute = LangLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthInvoicesInvoiceIdRoute = AuthInvoicesInvoiceIdImport.update({
-  id: '/invoices/$invoiceId',
-  path: '/invoices/$invoiceId',
+const AuthLangInvoicesRoute = AuthLangInvoicesImport.update({
+  id: '/$lang/invoices',
+  path: '/$lang/invoices',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -50,9 +51,15 @@ const AuthLangDashboardRoute = AuthLangDashboardImport.update({
 } as any)
 
 const AuthLangInvoicesIndexRoute = AuthLangInvoicesIndexImport.update({
-  id: '/$lang/invoices/',
-  path: '/$lang/invoices/',
-  getParentRoute: () => AuthRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthLangInvoicesRoute,
+} as any)
+
+const AuthLangInvoicesInvoiceIdRoute = AuthLangInvoicesInvoiceIdImport.update({
+  id: '/$invoiceId',
+  path: '/$invoiceId',
+  getParentRoute: () => AuthLangInvoicesRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -87,35 +94,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLangDashboardImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/invoices/$invoiceId': {
-      id: '/_auth/invoices/$invoiceId'
-      path: '/invoices/$invoiceId'
-      fullPath: '/invoices/$invoiceId'
-      preLoaderRoute: typeof AuthInvoicesInvoiceIdImport
+    '/_auth/$lang/invoices': {
+      id: '/_auth/$lang/invoices'
+      path: '/$lang/invoices'
+      fullPath: '/$lang/invoices'
+      preLoaderRoute: typeof AuthLangInvoicesImport
       parentRoute: typeof AuthImport
+    }
+    '/_auth/$lang/invoices/$invoiceId': {
+      id: '/_auth/$lang/invoices/$invoiceId'
+      path: '/$invoiceId'
+      fullPath: '/$lang/invoices/$invoiceId'
+      preLoaderRoute: typeof AuthLangInvoicesInvoiceIdImport
+      parentRoute: typeof AuthLangInvoicesImport
     }
     '/_auth/$lang/invoices/': {
       id: '/_auth/$lang/invoices/'
-      path: '/$lang/invoices'
-      fullPath: '/$lang/invoices'
+      path: '/'
+      fullPath: '/$lang/invoices/'
       preLoaderRoute: typeof AuthLangInvoicesIndexImport
-      parentRoute: typeof AuthImport
+      parentRoute: typeof AuthLangInvoicesImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthLangInvoicesRouteChildren {
+  AuthLangInvoicesInvoiceIdRoute: typeof AuthLangInvoicesInvoiceIdRoute
+  AuthLangInvoicesIndexRoute: typeof AuthLangInvoicesIndexRoute
+}
+
+const AuthLangInvoicesRouteChildren: AuthLangInvoicesRouteChildren = {
+  AuthLangInvoicesInvoiceIdRoute: AuthLangInvoicesInvoiceIdRoute,
+  AuthLangInvoicesIndexRoute: AuthLangInvoicesIndexRoute,
+}
+
+const AuthLangInvoicesRouteWithChildren =
+  AuthLangInvoicesRoute._addFileChildren(AuthLangInvoicesRouteChildren)
+
 interface AuthRouteChildren {
   AuthLangDashboardRoute: typeof AuthLangDashboardRoute
-  AuthInvoicesInvoiceIdRoute: typeof AuthInvoicesInvoiceIdRoute
-  AuthLangInvoicesIndexRoute: typeof AuthLangInvoicesIndexRoute
+  AuthLangInvoicesRoute: typeof AuthLangInvoicesRouteWithChildren
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthLangDashboardRoute: AuthLangDashboardRoute,
-  AuthInvoicesInvoiceIdRoute: AuthInvoicesInvoiceIdRoute,
-  AuthLangInvoicesIndexRoute: AuthLangInvoicesIndexRoute,
+  AuthLangInvoicesRoute: AuthLangInvoicesRouteWithChildren,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -125,8 +150,9 @@ export interface FileRoutesByFullPath {
   '/$lang/login': typeof LangLoginRoute
   '/$lang': typeof LangIndexRoute
   '/$lang/dashboard': typeof AuthLangDashboardRoute
-  '/invoices/$invoiceId': typeof AuthInvoicesInvoiceIdRoute
-  '/$lang/invoices': typeof AuthLangInvoicesIndexRoute
+  '/$lang/invoices': typeof AuthLangInvoicesRouteWithChildren
+  '/$lang/invoices/$invoiceId': typeof AuthLangInvoicesInvoiceIdRoute
+  '/$lang/invoices/': typeof AuthLangInvoicesIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -134,7 +160,7 @@ export interface FileRoutesByTo {
   '/$lang/login': typeof LangLoginRoute
   '/$lang': typeof LangIndexRoute
   '/$lang/dashboard': typeof AuthLangDashboardRoute
-  '/invoices/$invoiceId': typeof AuthInvoicesInvoiceIdRoute
+  '/$lang/invoices/$invoiceId': typeof AuthLangInvoicesInvoiceIdRoute
   '/$lang/invoices': typeof AuthLangInvoicesIndexRoute
 }
 
@@ -144,7 +170,8 @@ export interface FileRoutesById {
   '/$lang/login': typeof LangLoginRoute
   '/$lang/': typeof LangIndexRoute
   '/_auth/$lang/dashboard': typeof AuthLangDashboardRoute
-  '/_auth/invoices/$invoiceId': typeof AuthInvoicesInvoiceIdRoute
+  '/_auth/$lang/invoices': typeof AuthLangInvoicesRouteWithChildren
+  '/_auth/$lang/invoices/$invoiceId': typeof AuthLangInvoicesInvoiceIdRoute
   '/_auth/$lang/invoices/': typeof AuthLangInvoicesIndexRoute
 }
 
@@ -155,15 +182,16 @@ export interface FileRouteTypes {
     | '/$lang/login'
     | '/$lang'
     | '/$lang/dashboard'
-    | '/invoices/$invoiceId'
     | '/$lang/invoices'
+    | '/$lang/invoices/$invoiceId'
+    | '/$lang/invoices/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
     | '/$lang/login'
     | '/$lang'
     | '/$lang/dashboard'
-    | '/invoices/$invoiceId'
+    | '/$lang/invoices/$invoiceId'
     | '/$lang/invoices'
   id:
     | '__root__'
@@ -171,7 +199,8 @@ export interface FileRouteTypes {
     | '/$lang/login'
     | '/$lang/'
     | '/_auth/$lang/dashboard'
-    | '/_auth/invoices/$invoiceId'
+    | '/_auth/$lang/invoices'
+    | '/_auth/$lang/invoices/$invoiceId'
     | '/_auth/$lang/invoices/'
   fileRoutesById: FileRoutesById
 }
@@ -207,8 +236,7 @@ export const routeTree = rootRoute
       "filePath": "_auth.tsx",
       "children": [
         "/_auth/$lang/dashboard",
-        "/_auth/invoices/$invoiceId",
-        "/_auth/$lang/invoices/"
+        "/_auth/$lang/invoices"
       ]
     },
     "/$lang/login": {
@@ -221,13 +249,21 @@ export const routeTree = rootRoute
       "filePath": "_auth.$lang.dashboard.tsx",
       "parent": "/_auth"
     },
-    "/_auth/invoices/$invoiceId": {
-      "filePath": "_auth.invoices.$invoiceId.tsx",
-      "parent": "/_auth"
+    "/_auth/$lang/invoices": {
+      "filePath": "_auth.$lang.invoices.tsx",
+      "parent": "/_auth",
+      "children": [
+        "/_auth/$lang/invoices/$invoiceId",
+        "/_auth/$lang/invoices/"
+      ]
+    },
+    "/_auth/$lang/invoices/$invoiceId": {
+      "filePath": "_auth.$lang.invoices.$invoiceId.tsx",
+      "parent": "/_auth/$lang/invoices"
     },
     "/_auth/$lang/invoices/": {
       "filePath": "_auth.$lang.invoices.index.tsx",
-      "parent": "/_auth"
+      "parent": "/_auth/$lang/invoices"
     }
   }
 }

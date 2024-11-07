@@ -10,6 +10,7 @@ interface MyRouterContext {
   }
 
   export const Route = createRootRouteWithContext<MyRouterContext>()({
+    notFoundComponent: () => <div>Not found page</div>,
     component: RootComponent,
 
     beforeLoad: async ({ location }) => {
