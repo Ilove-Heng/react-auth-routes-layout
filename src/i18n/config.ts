@@ -6,6 +6,8 @@ const resources = {
     translation: {
       login: {
         "title": "Login Page",
+        "description": "Login to your account",
+        "button": "Login",
       },
       product: {
         title: 'Product',
@@ -75,6 +77,8 @@ const resources = {
     translation: {
       login: {
         "title": "ទំព័រចូល",
+        "description": "ចូលទៅកាន់គណនីរបស់អ្នក",
+        "button": "ចូល",
       },
       product: {
         title: 'ផលិតផល',

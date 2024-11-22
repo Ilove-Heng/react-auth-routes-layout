@@ -12,7 +12,7 @@ function DashboardPage() {
 
   return (
       <>
-        <h1>{t('home.title')}</h1>
+        <h1>{t('home.title')} ({auth.user?.username})</h1>
       <p>This route's content is only visible to authenticated users.</p>
       <pre>{JSON.stringify(auth.user, null, 2)}</pre>
       </>

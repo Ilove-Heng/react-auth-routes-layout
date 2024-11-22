@@ -1,8 +1,12 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from '@tanstack/react-router'
 import { useAuth } from '../context/auth-context';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 export const Route = createFileRoute('/_auth')({
+  validateSearch: z.object({
+    redirect: z.string().optional().catch(''),
+  }),
   beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
       throw redirect({
@@ -22,12 +26,19 @@ function AuthLayout() {
   const router = useRouter()
   const navigate = Route.useNavigate();
   const auth = useAuth();
+  const search = Route.useSearch()
 
   const handleLogout = async () => {
     if (window.confirm('Are you sure you want to logout?')) {
+
       await auth.logout();
       await router.invalidate();
-      navigate({ to: '/$lang/login', params: { lang: 'en' } });
+
+      // Redirect to login page
+      await navigate({
+        to: search.redirect || '/$lang/login',
+        params: { lang: 'en' }
+      });
     }
   }
 
