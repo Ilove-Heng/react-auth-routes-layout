@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link as RouterLink, useRouter, useRouterState, useNavigate } from '@tanstack/react-router';
+import { Link as RouterLink, useRouter, useNavigate } from '@tanstack/react-router';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
@@ -32,10 +32,9 @@ interface LoginValues {
 }
 
 
-export default function AuthLogin({ isDemo = false }: { isDemo?: boolean }) {
+export default function AuthLogin() {
     const auth = useAuth()
     const router = useRouter()
-    const isLoading = useRouterState({ select: (s) => s.isLoading })
     const navigate = useNavigate()
 
   const [checked, setChecked] = React.useState(false);
@@ -49,9 +48,7 @@ export default function AuthLogin({ isDemo = false }: { isDemo?: boolean }) {
     event.preventDefault();
   };
 
-  const handleSocialLogin = (socialMedia: string) => {
-    // Handle social login logic here
-  };
+
 
   const handleSubmit = async (values: LoginValues, { setSubmitting }: FormikHelpers<LoginValues>) => {
     setSubmitting(true); 
@@ -191,7 +188,6 @@ export default function AuthLogin({ isDemo = false }: { isDemo?: boolean }) {
                   <Grid item xs={12} sm={4}>
                     {/* Google Login */}
                   <Button
-                      onClick={() => handleSocialLogin('Google')}
                       startIcon={<GoogleIcon />}
                       fullWidth
                       variant="outlined"
@@ -204,7 +200,6 @@ export default function AuthLogin({ isDemo = false }: { isDemo?: boolean }) {
                   {/* Facebook Login */}
                   <Grid item xs={12} sm={4}>
                     <Button
-                      onClick={() => handleSocialLogin('Facebook')}
                       startIcon={<FacebookIcon />}
                       fullWidth
                       variant="outlined"
@@ -218,7 +213,6 @@ export default function AuthLogin({ isDemo = false }: { isDemo?: boolean }) {
                    {/* GitHub Login */}
                    <Grid item xs={12} sm={4}>
                   <Button
-                    onClick={() => handleSocialLogin('GitHub')}
                     startIcon={<GitHubIcon />}
                     fullWidth
                     variant="outlined"

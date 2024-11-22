@@ -12,6 +12,7 @@ export interface AuthCardProps extends MuiBoxProps {
 
 export default function AuthCard({ children, ...other }: AuthCardProps) {
   return (
+    // @ts-ignore
     <MainCard
       sx={{
         maxWidth: { xs: 400, lg: 475 },

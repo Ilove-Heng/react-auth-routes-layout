@@ -2,8 +2,7 @@ import {
   createFileRoute,
   Link as RouterLink,
   redirect,
-  useRouter,
-  useRouterState
+  useRouter
 } from '@tanstack/react-router'
 import { z } from 'zod'
 

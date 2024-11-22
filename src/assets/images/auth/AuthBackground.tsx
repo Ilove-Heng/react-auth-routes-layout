@@ -18,6 +18,7 @@ export default function AuthBackground() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         transform: 'inherit',
+        backgroundColor: theme.palette.background.default,
         backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`
       }} 
     >
